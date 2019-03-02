@@ -33,7 +33,7 @@ describe("Cytoscape", function() {
 
   it("check version", function(done) {
     var expectedValue = {
-      cytoscapeVersion: '3.7.0-RC1',
+      cytoscapeVersion: '3.7.1',
       apiVersion: 'v1'
     };
     cyCaller.get("/v1/version", function(v){
