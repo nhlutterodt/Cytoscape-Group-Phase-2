@@ -67,7 +67,7 @@
 			progress: true,
 
 			// Display the page number of the current slide
-			slideNumber: false,
+			slideNumber: true,
 
 			// Use 1 based indexing for # links to match slide number (default is zero
 			// based)
@@ -82,7 +82,7 @@
 			// Enable keyboard shortcuts for navigation
 			keyboard: true,
 
-			// Optional function that blocks keyboard events when retuning false
+			// Optional function that blocks keyboard events when returning false
 			keyboardCondition: null,
 
 			// Enable the slide overview mode

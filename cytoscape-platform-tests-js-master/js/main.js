@@ -19,6 +19,8 @@ function close_session (slide) {
   })
 }
 
+
+
 function galfiltered (slide) {
   const url = GALFILTERED
   cyCaller.load_file_from_url(url, function (suid) {
@@ -78,6 +80,25 @@ function layout (slide) {
   })
 }
 
+function resetSlide (slide) {
+	  cyCaller.delete('/v1/session', {}, function (r) {
+	    showControls(slide)
+	  })
+	}
+
+
+
+function hierarchicalLayout (slide) {
+	  const url = GALFILTERED
+	  cyCaller.load_file_from_url(url, function (suid) {
+	    cyCaller.get('/v1/apply/layouts/hierarchical/' + suid,
+	      function () {
+	        showControls(slide)
+	      })
+	  })
+	}
+
+
 function session_save (slide) {
   const post_save = (loc) => {
     initDropArea(slide, "cysDrop", 'Saved session file to ' + loc + '.cys', '.cys', handleCYS)
@@ -115,6 +136,7 @@ function toggle_tests(vis){
     testDiv.style.height = '0%'
   }
 }
+
 
 function runjasmine (slide) {
   log(JSON.stringify(window.DATA['responses']), slide.id)
@@ -309,6 +331,7 @@ function clearSession (slide, callback) {
   })
 }
 
+
 function call (slide) {
   toggle_tests(slide.id === 'runjasmine')
   const funcs = {
@@ -317,6 +340,8 @@ function call (slide) {
     'galfiltered': (v) => { clearSession(v, galfiltered) },
     'diffusion': (v) => { clearSession(v, diffusion) },
     'layout': (v) => { clearSession(v, layout) },
+    'resetSlide': (v) =>  { clearSession(v, showControls) },
+    'hierarchicalLayout': (v) => { clearSession(v, hierarchicalLayout) },
     'session_save': (v) => { clearSession(v, session_save) },
     'runjasmine': runjasmine,
     'user_feedback': feedback,
@@ -391,7 +416,7 @@ Reveal.initialize({
       buildSlide(options, container)
     }
   }],
-  controlsBackArrows: 'hidden',
+  controlsBackArrows: 'false',
   controlsTutorial: false,
   progress: false,
   keyboard: false,
