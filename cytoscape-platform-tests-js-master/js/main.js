@@ -7,19 +7,28 @@ function toggleLog () {
   log.style.display = log.style.display === 'none' ? 'block' : 'none'
 }
 
+
+// todo: Stores selected Test
+var testList = [
+  {category : "Network", Test: "Nodes and Edges", Selected: "false"},
+  {category : "Network", Test: "Nodes and Edges", Selected: "false"},
+  {category : "Network", Test: "Nodes and Edges", Selected: "false"},
+];
+
+ 
 function init (slide) {
+  console.log('init func called for slide:'+ slide.id)
   addResponse(slide.id, { 'appVersion': window.navigator['appVersion'] })
   showControls(slide)
 }
 
 /* SLIDES */
 function close_session (slide) {
+  console.log('close_session func called for slide:'+ slide.id)
   cyCaller.delete('/v1/session', {}, function (r) {
     showControls(slide)
   })
 }
-
-
 
 function galfiltered (slide) {
   const url = GALFILTERED
@@ -44,6 +53,34 @@ function galfiltered (slide) {
         check.labels[0].innerText = 'Node count is ' + nodes.length + '?'
         showControls(slide)
       })
+    })
+  })
+}
+
+//Create function for executing Test in test array
+function runSelectedTest(slide){
+  // todo::Loop through list and setup test to execute
+
+}
+
+function diffusionWithOptions (slide) {
+  const select_nodes = (suid, node_suids) => {
+    cyCaller.put('/v1/networks/' + suid + '/nodes/selected', node_suids, function () {
+      cyCaller.post('/diffusion/v1/currentView/diffuse_with_options', {"Time":"0.1", "heatColumnName": "gal80Rexp"}, () => {
+        showControls(slide)
+      })
+    })
+  }
+  const url = GALFILTERED
+  cyCaller.load_file_from_url(url, function (suid) {
+    cyCaller.get('/v1/networks/' + suid + '/tables/defaultnode/rows', function (r) {
+      const rows = JSON.parse(r)
+      for (var i in rows) {
+        if (rows[i]['COMMON'] === 'RAP1') {
+          select_nodes(suid, [rows[i]['SUID']])
+          return
+        }
+      }
     })
   })
 }
@@ -80,24 +117,15 @@ function layout (slide) {
   })
 }
 
-function resetSlide (slide) {
-	  cyCaller.delete('/v1/session', {}, function (r) {
-	    showControls(slide)
-	  })
-	}
-
-
-
-function hierarchicalLayout (slide) {
-	  const url = GALFILTERED
-	  cyCaller.load_file_from_url(url, function (suid) {
-	    cyCaller.get('/v1/apply/layouts/hierarchical/' + suid,
-	      function () {
-	        showControls(slide)
-	      })
-	  })
-	}
-
+function hierarchalLayout (slide) {
+  const url = GALFILTERED
+  cyCaller.load_file_from_url(url, function (suid) {
+    cyCaller.get('/v1/apply/layouts/hierarchical/' + suid,
+      function () {
+        showControls(slide)
+      })
+  })
+}
 
 function session_save (slide) {
   const post_save = (loc) => {
@@ -137,7 +165,6 @@ function toggle_tests(vis){
   }
 }
 
-
 function runjasmine (slide) {
   log(JSON.stringify(window.DATA['responses']), slide.id)
   window.runtests()
@@ -165,9 +192,8 @@ function submit_slide(slide){
   element.innerHTML = '<a href="data:text/plain;charset=utf-8,' +
     encodeURIComponent(text) + '" download="Cytoscape_Testing_results.txt">Download testing results</a>' +
     '<br/> and <br/>' +
-    '<a href="https://docs.google.com/forms/d/e/1FAIpQLSd6mqK5yYd7ziRNqL37B5rxf-gI2z2_9oahjvcf-OXBUqOPGQ/viewform">submit them here</a>' +
-    ' or ' +
-    '<a target="_blank" href="mailto:bsettle@ucsd.edu">email them to bsettle@ucsd.edu</a></p>'
+    '<a href="https://docs.google.com/forms/d/e/1FAIpQLSd6mqK5yYd7ziRNqL37B5rxf-gI2z2_9oahjvcf-OXBUqOPGQ/viewform">submit them here</a></p>' 
+   
 
   slide.appendChild(element)
 }
@@ -295,7 +321,12 @@ function buildInput (n) {
   if (n['type'] === 'checkbox') {
     entry = "<input type='checkbox' id='" + n['id'] + "' class='" + n['id'] + "'/>" +
       "<label for='" + n['id'] + "'>" + n['text'] + '</label>'
-  } else if (n['type'] === 'text') {
+  }
+  else if (n['type'] === 'radio') {
+    entry = "<input type='radio'" + (n['checked'] === "true" ? 'checked': '') + " name='" + n['name'] + "' id='" + n['id'] + "' class='" + n['id'] + "'/>" +
+      "<label for='" + n['id'] + "'>" + n['text'] + '</label>'
+  }  
+  else if (n['type'] === 'text') {
     entry = "<label for='" + n['id'] + "'>" + n['text'] + '</label>' +
       "<input type='text' id='" + n['id'] + "'' name='" + n['id'] + "'/>"
   } else if (n['type'] === 'textarea') {
@@ -326,22 +357,24 @@ function buildSlide (options, container) {
 }
 
 function clearSession (slide, callback) {
+
+  console.log ('clearSession called by slide' + slide + ' callback is ' + callback)
   cyCaller.delete('/v1/session', {}, function (r) {
     callback(slide)
   })
 }
 
-
 function call (slide) {
+
+  console.log('call function called for slide:' + slide.id)
   toggle_tests(slide.id === 'runjasmine')
   const funcs = {
     'init': init,
     'close_session': (v) => { clearSession(v, showControls) },
     'galfiltered': (v) => { clearSession(v, galfiltered) },
-    'diffusion': (v) => { clearSession(v, diffusion) },
+    'diffusion': (v) => { clearSession(v, diffusionWithOptions) },
     'layout': (v) => { clearSession(v, layout) },
-    'resetSlide': (v) =>  { clearSession(v, showControls) },
-    'hierarchicalLayout': (v) => { clearSession(v, hierarchicalLayout) },
+    'hierarchalLayout': (v) => { clearSession(v, hierarchalLayout) },
     'session_save': (v) => { clearSession(v, session_save) },
     'runjasmine': runjasmine,
     'user_feedback': feedback,
@@ -349,9 +382,12 @@ function call (slide) {
     'submit': submit_slide
   }
 
-  log('Starting slide', slide.id)
+  log('Starting slide: ' + slide.id, slide.id)
   if (funcs.hasOwnProperty(slide.id)) {
-    Reveal.configure({ controls: false })
+    Reveal.configure({ 
+      controls: true,
+     slideNumber: true 
+  })
     try{
       funcs[slide.id](slide)
       setTimeout(() => { Reveal.configure({ controls: true }) }, 10000)
@@ -384,6 +420,7 @@ function save_answers (slide) {
 }
 
 function showControls (slide, vis = true) {
+  console.log('showcontrols for slide ' + slide + ' value is '+ vis)
 	var preloaddisplay = vis ? "none" : "block";
   var entriesdisplay = vis ? "block" : "none";
 	if (slide.getElementsByClassName("preload").length > 0) {
@@ -408,7 +445,7 @@ Reveal.initialize({
   ],
   anything: [{
     className: 'cyrest',
-    defaults: { 'title': 'Cytoscape Testing' },
+    defaults: { 'title': 'Cytoscape Testing2' },
     initialize: function (container, options) {
       if (!options) {
         options = {}
@@ -416,7 +453,7 @@ Reveal.initialize({
       buildSlide(options, container)
     }
   }],
-  controlsBackArrows: 'false',
+  controlsBackArrows: 'visible',
   controlsTutorial: false,
   progress: false,
   keyboard: false,
