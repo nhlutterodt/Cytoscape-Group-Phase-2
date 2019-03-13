@@ -1,7 +1,7 @@
 describe("Cytoscape", function() {
 
   beforeAll(function() {
-    // console.log(window.DATA.responses);
+     console.log(window.DATA.responses);
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
@@ -72,19 +72,10 @@ describe("Cytoscape", function() {
   it("layout", function() {
     var testValue = window.DATA.responses["layout"]
     var expectedValue = { 
-      circular_layout: true
+      layoutType: true
     };
     expect(testValue).toEqual(expectedValue);
   });
-  
-  
-  it("hierarchicalLayout", function() {
-	    var testValue = window.DATA.responses["hierarchicalLayout"]
-	    var expectedValue = { 
-	    hierarchical_layout: true
-	    };
-	    expect(testValue).toEqual(expectedValue);
-	  });
 
   it("verify app versions", function(done) {
     var expectedValues =

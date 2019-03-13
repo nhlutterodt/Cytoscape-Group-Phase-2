@@ -6,25 +6,16 @@ function toggleLog () {
   const log = document.getElementById('log-container')
   log.style.display = log.style.display === 'none' ? 'block' : 'none'
 }
-
-
-// todo: Stores selected Test
-var testList = [
-  {category : "Network", Test: "Nodes and Edges", Selected: "false"},
-  {category : "Network", Test: "Nodes and Edges", Selected: "false"},
-  {category : "Network", Test: "Nodes and Edges", Selected: "false"},
-];
-
  
 function init (slide) {
-  console.log('init func called for slide:'+ slide.id)
+ // console.log('init func called for slide:'+ slide.id)
   addResponse(slide.id, { 'appVersion': window.navigator['appVersion'] })
   showControls(slide)
 }
 
 /* SLIDES */
 function close_session (slide) {
-  console.log('close_session func called for slide:'+ slide.id)
+ // console.log('close_session func called for slide:'+ slide.id)
   cyCaller.delete('/v1/session', {}, function (r) {
     showControls(slide)
   })
@@ -57,42 +48,38 @@ function galfiltered (slide) {
   })
 }
 
-//Create function for executing Test in test array
-function runSelectedTest(slide){
-  // todo::Loop through list and setup test to execute
-
-}
-
-function diffusionWithOptions (slide) {
-  const select_nodes = (suid, node_suids) => {
-    cyCaller.put('/v1/networks/' + suid + '/nodes/selected', node_suids, function () {
-      cyCaller.post('/diffusion/v1/currentView/diffuse_with_options', {"Time":"0.1", "heatColumnName": "gal80Rexp"}, () => {
-        showControls(slide)
-      })
-    })
-  }
-  const url = GALFILTERED
-  cyCaller.load_file_from_url(url, function (suid) {
-    cyCaller.get('/v1/networks/' + suid + '/tables/defaultnode/rows', function (r) {
-      const rows = JSON.parse(r)
-      for (var i in rows) {
-        if (rows[i]['COMMON'] === 'RAP1') {
-          select_nodes(suid, [rows[i]['SUID']])
-          return
-        }
-      }
-    })
-  })
-}
 
 function diffusion (slide) {
-  const select_nodes = (suid, node_suids) => {
-    cyCaller.put('/v1/networks/' + suid + '/nodes/selected', node_suids, function () {
-      cyCaller.post('/diffusion/v1/currentView/diffuse', {}, () => {
-        showControls(slide)
-      })
-    })
+
+ // pull selected test from Test selection 
+  var selectedTest = window.DATA.responses['diffusionTestConfig'];
+  var endpoint = '';
+  var data = {};
+  var option = ' '; 
+
+  // setup test endpoint and test Type
+  if (selectedTest.diffusionTest === true){
+    endpoint = '/diffusion/v1/currentView/diffuse';
+      
+  }else if (selectedTest.diffusionTestwithoptions === true){
+     endpoint = '/diffusion/v1/currentView/diffuse_with_options';
+     option = ' with options ';
+     data = {"Time":selectedTest.diffusionwithoptions_time, "heatColumnName": selectedTest.diffusionwithoptions_heatcolumn};
+     //{"Time": "0.1", "heatColumnName": "gal80Rexp"}
   }
+
+    // Update the label based on the selected test
+    const check = slide.getElementsByClassName('diffused')[0]
+        check.labels[0].innerText = 'Did diffusion'+option+'run successfully and select nodes?'
+
+    const select_nodes = (suid, node_suids) => {
+      cyCaller.put('/v1/networks/' + suid + '/nodes/selected', node_suids, function () {
+        cyCaller.post(endpoint, data, () => {
+          showControls(slide)
+        })
+      })
+    }
+ 
   const url = GALFILTERED
   cyCaller.load_file_from_url(url, function (suid) {
     cyCaller.get('/v1/networks/' + suid + '/tables/defaultnode/rows', function (r) {
@@ -108,19 +95,30 @@ function diffusion (slide) {
 }
 
 function layout (slide) {
-  const url = GALFILTERED
-  cyCaller.load_file_from_url(url, function (suid) {
-    cyCaller.get('/v1/apply/layouts/circular/' + suid,
-      function () {
-        showControls(slide)
-      })
-  })
-}
 
-function hierarchalLayout (slide) {
+  // pull selected test from Test selection 
+  var selectedTest = window.DATA.responses['layoutTestConfig'];
+  var endpoint = '';
+  var data = {};
+  var layoutType = '';
+
+  // setup test endpoint and test Type
+  if (selectedTest.circularLayout === true){
+    endpoint = '/v1/apply/layouts/circular/';
+    layoutType = 'circular';
+      
+  }else if (selectedTest.hierarchalLayout === true){
+     endpoint = '/v1/apply/layouts/hierarchical/';
+      layoutType = 'hierarchical';
+  }
+
+  // Update the label based on the selected test
+ const check = slide.getElementsByClassName('layoutType')[0]
+        check.labels[0].innerText = 'Has the ' + layoutType + ' layout been applied?'
+
   const url = GALFILTERED
   cyCaller.load_file_from_url(url, function (suid) {
-    cyCaller.get('/v1/apply/layouts/hierarchical/' + suid,
+    cyCaller.get(endpoint + suid,
       function () {
         showControls(slide)
       })
@@ -372,7 +370,7 @@ function call (slide) {
     'init': init,
     'close_session': (v) => { clearSession(v, showControls) },
     'galfiltered': (v) => { clearSession(v, galfiltered) },
-    'diffusion': (v) => { clearSession(v, diffusionWithOptions) },
+    'diffusion': (v) => { clearSession(v, diffusion) },
     'layout': (v) => { clearSession(v, layout) },
     'hierarchalLayout': (v) => { clearSession(v, hierarchalLayout) },
     'session_save': (v) => { clearSession(v, session_save) },
@@ -411,6 +409,7 @@ function save_answers (slide) {
     }
     const id = slide.id
     const value = {
+      'radio':inp.checked,
       'checkbox': inp.checked,
       'text': inp.value
     }[inp.type]
