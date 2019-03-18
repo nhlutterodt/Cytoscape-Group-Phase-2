@@ -498,7 +498,7 @@ xhr.addEventListener("readystatechange", function () {
 });
 
 xhr.open("POST", "https://cytoscape.atlassian.net/rest/api/3/issue");
-xhr.setRequestHeader("authorization", "Basic bmhsdXR0ZXJvZHRAZ21haWwuY29tOjFaWlFRMFBkQ3JWdE9hMXNkb3JOMDIxMw==");
+xhr.setRequestHeader("authorization", "");
 xhr.setRequestHeader("content-type", "application/json");
 
 xhr.send(data);
