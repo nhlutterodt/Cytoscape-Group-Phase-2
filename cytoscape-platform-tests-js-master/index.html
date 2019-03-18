@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/reveal.css">
   <link rel="stylesheet" href="css/theme/black.css">
 
+
+  <!-- Adding Jasmine Test capabilities-->
   <script src="lib/jasmine-3.2.1/jasmine.js"></script>
   <script src="lib/jasmine-3.2.1/jasmine-html.js"></script>
   <script src="lib/jasmine-3.2.1/boot.js"></script>
@@ -40,8 +42,9 @@
     </div>
   <div id="reveal-container" style="width: 100%; height: 100%">
   <div class="reveal">
+    
     <div class="slides">
-      <section id="init">
+       <section id="init">
           <div class="cyrest">
             <!--{
               "title": "Cytoscape Testing",
@@ -63,7 +66,7 @@
         <a href="https://github.com/cytoscape/cytoscape-gui-distribution/releases" target="_blank"><u>Go to Github Releases</u></a>
         <p>The installer should create an executable for you.</p>
       </section>
-      <section id="close_session">
+       <section id="close_session">
         <div class="cyrest">
         <!--{
         "title": "Close Session",
@@ -78,10 +81,89 @@
         }-->
         </div>
       </section>
+      <section>
+      	<section id="networkTestConfig" data-transition="zoom"> 
+          <div class="cyrest" style="text-align:left;">
+        <!--{
+        "title": "Network Tests",
+        "text": "Network Options",
+        "inputs": [
+        {
+          "id": "edgesandnodesTest",
+          "name":"v_2", 
+          "text": "List the number of edges and nodes",
+          "type": "radio",
+          "checked":"false"
+        }]
+        }-->
+        </div>
+
+        	<div class="navigate-next">Continue</div>
+        </section>
+        <section id="layoutTestConfig" data-transition="zoom"> 
+          <div class="cyrest" style="text-align:left;">
+        <!--{
+        "title": "Layout Tests",
+        "text": "List the networks",
+        "inputs": [
+        {
+          "id": "circularLayout",
+          "name":"N_2", 
+          "text": "Circular Layout",
+          "type": "radio",
+          "checked":"true"
+        },{
+          "id": "hierarchalLayout",
+          "name":"N_2", 
+          "text": "Hierarchal Layout",
+          "type": "radio",
+           "checked":"false"
+        }]
+        }-->
+        </div>
+        	<div class="navigate-next">Continue</div>
+        </section>
+         <section id="diffusionTestConfig" data-transition="zoom"> 
+          <div class="cyrest" style="text-align:left;">
+        <!--{
+        "title": "Diffusion Tests",
+      
+        "inputs": [
+        {
+          "id": "diffusionTest",
+          "name":"D_2", 
+          "text": "Diffuse",
+          "type": "radio",
+          "checked":"false"
+        },{
+          "id": "diffusionTestwithoptions",
+          "name":"D_2", 
+          "text": "Diffuse with Options",
+          "type": "radio",
+           "checked":"false"
+        },
+        {
+          "id": "diffusionwithoptions_time",
+          "text": "Time",
+          "type": "text"
+           
+        },
+        {
+          "id": "diffusionwithoptions_heatcolumn",
+          "text": "Heat Column",
+          "type": "text"
+           
+        }
+        ]
+        }-->
+        </div>
+        <a href="#/galfiltered">Start Network Test</a>
+        </section>
+      </section>
       <section id="galfiltered">
         <div class="cyrest">
         <!--{
-        "title": "GalFiltered.cys Test",
+        "title": "Execute Network Tests",
         "inputs": [
         {
           "id": "nodeCountMatches",
@@ -94,6 +176,22 @@
         }]
         }-->
         </div>
+        	<p class="fragment highlight-current-blue"><a href="#/layout">Start Layout Test</a></p>
+         
+      </section>
+      <section id="layout">
+        <div class="cyrest">
+        <!--{
+        "title": "Layout",
+        "inputs": [
+        {
+          "id": "layoutType",
+          "text": "Has the ??? layout been applied?",
+          "type": "checkbox"
+        }]
+        }-->
+        </div>
+        <a href="#/diffusion">Start Diffusion Test</a>
       </section>
       <section id="diffusion">
         <div class="cyrest">
@@ -105,19 +203,6 @@
         {
           "id": "diffused",
           "text": "Did diffusion run successfully and select nodes?",
-          "type": "checkbox"
-        }]
-        }-->
-        </div>
-      </section>
-      <section id="layout">
-        <div class="cyrest">
-        <!--{
-        "title": "Layout",
-        "inputs": [
-        {
-          "id": "circular_layout",
-          "text": "Has the circular layout been applied?",
           "type": "checkbox"
         }]
         }-->
