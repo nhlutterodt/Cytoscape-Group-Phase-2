@@ -7,6 +7,7 @@ function toggleLog () {
   log.style.display = log.style.display === 'none' ? 'block' : 'none'
 }
  
+
 function init (slide) {
  // console.log('init func called for slide:'+ slide.id)
   addResponse(slide.id, { 'appVersion': window.navigator['appVersion'] })
@@ -189,8 +190,8 @@ function submit_slide(slide){
   element.style = 'font-size: 22px'
   element.innerHTML = '<a href="data:text/plain;charset=utf-8,' +
     encodeURIComponent(text) + '" download="Cytoscape_Testing_results.txt">Download testing results</a>' +
-    '<br/> and <br/>' +
-    '<a href="https://docs.google.com/forms/d/e/1FAIpQLSd6mqK5yYd7ziRNqL37B5rxf-gI2z2_9oahjvcf-OXBUqOPGQ/viewform">submit them here</a></p>' 
+    '<br/> or <br/>' +
+    '<button onclick="submit_jira_ticket()">Submit them as a JIRA Issue Here</button>' 
    
 
   slide.appendChild(element)
@@ -200,6 +201,7 @@ function submit_slide(slide){
 function handleCYS(files) {
   addResponse('session_save', { 'file_size': files[0].size })
 }
+
 
 function handleLog(files) {
   const reader = new FileReader()
@@ -420,7 +422,7 @@ function save_answers (slide) {
 
 function showControls (slide, vis = true) {
   console.log('showcontrols for slide ' + slide + ' value is '+ vis)
-	var preloaddisplay = vis ? "none" : "block";
+  var preloaddisplay = vis ? "none" : "block";
   var entriesdisplay = vis ? "block" : "none";
 	if (slide.getElementsByClassName("preload").length > 0) {
 		slide.getElementsByClassName("preload")[0].style.display = preloaddisplay;
@@ -452,7 +454,7 @@ Reveal.initialize({
       buildSlide(options, container)
     }
   }],
-  controlsBackArrows: 'visible',
+  controlsBackArrows: 'hidden',
   controlsTutorial: false,
   progress: false,
   keyboard: false,
@@ -465,7 +467,39 @@ Reveal.addEventListener('slidechanged', function (event) {
   call(event.currentSlide)
 })
 
+
+
+
 const cyCaller = new CyCaller()
 cyCaller.setLogCallBack(log)
 setTimeout(() => { call(Reveal.getSlide(0)) }, 500)
 //log('Started Cytoscape Testing', 'init')
+
+function submit_jira_ticket(){
+    var data = JSON.stringify({
+  "fields": {
+    "summary": "Auto-generated report",
+    "project": {
+      "id": "10101"
+    },
+    "issuetype": {
+      "id": "10100"
+    }
+  }
+});
+
+var xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener("readystatechange", function () {
+  if (this.readyState === this.DONE) {
+    console.log(this.responseText);
+  }
+});
+
+xhr.open("POST", "https://cytoscape.atlassian.net/rest/api/3/issue");
+xhr.setRequestHeader("authorization", "Basic bmhsdXR0ZXJvZHRAZ21haWwuY29tOjFaWlFRMFBkQ3JWdE9hMXNkb3JOMDIxMw==");
+xhr.setRequestHeader("content-type", "application/json");
+
+xhr.send(data);
+}
