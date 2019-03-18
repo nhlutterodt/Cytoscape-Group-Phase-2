@@ -478,12 +478,12 @@ setTimeout(() => { call(Reveal.getSlide(0)) }, 500)
 function submit_jira_ticket(){
     var data = JSON.stringify({
   "fields": {
-    "summary": "Auto-generated report",
+    "summary": "",
     "project": {
-      "id": "10101"
+      "id": ""
     },
     "issuetype": {
-      "id": "10100"
+      "id": ""
     }
   }
 });
