@@ -1,20 +1,19 @@
 
 
-class AP {
+class JiraRESTInstance {
   constructor (base_url, port) {
     if (base_url === undefined) {
-      base_url = CyRESTInstance.BASE_URL
+      base_url = JiraRESTInstance.BASE_URL
     }
     if (port === undefined) {
-      port = CyRESTInstance.PORT
+      port = JiraRESTInstance.PORT
     }
-    this.port = port
+   
     this.base_url = base_url
   }
 }
 
-//jiraRESTInstance.PORT = 8080
-jiraRESTInstance.BASE_URL = 'https://cytoscape.atlassian.net/'
+JiraRESTInstance.BASE_URL = ''//'https://cytoscape.atlassian.net/'
 
 class JiraCaller {
   // ''
@@ -25,7 +24,7 @@ class JiraCaller {
     // 'Constructor remembers JiraREST location and  credentials'
     // ''
     if (jira_rest_instance === undefined) {
-      jira_rest_instance = new jiraRESTInstance()
+      jira_rest_instance = new JiraRESTInstance()
     }
     this.jira_rest_instance = jira_rest_instance
     this.log = undefined
@@ -41,7 +40,7 @@ class JiraCaller {
     Http.open(method, url)
     Http.setRequestHeader('Content-type', 'application/json')
     Http.setRequestHeader('Accept', 'application/json')
-    Http.setRequestHeader('authorization','<token>')
+    //Http.setRequestHeader('authorization','<token>')
     Http.send(data)
     Http.onreadystatechange = (e) => {
       if (Http.readyState === 4) {        
@@ -100,5 +99,34 @@ class JiraCaller {
     // 'Execute a REST call using GET'
     // ''
     return this._execute('get', endpoint, {}, callback)
+  }
+
+    get_issue_id (callback) {
+    const body = [{ "userId": 2,     
+    "id": 2,     
+    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",     
+    "body": "quia et suscipit"   }]
+
+      this.post('https://jsonplaceholder.typicode.com/posts', body, function (r) {
+      const data = JSON.parse(r)
+      const issueID = data[0].id
+      callback(issueID)
+    })
+  }
+
+    submit_log (issueID, data) {
+    
+    //for this test body is set to default response, otherwise, data.
+
+    const body = [{ "userId": 2,     
+    "id": 2,     
+    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",     
+    "body": "quia et suscipit"   }]
+
+      this.post('https://jsonplaceholder.typicode.com/posts', body, function (r) {
+      const dataResponse = JSON.parse(r)
+      const attachmentID = dataResponse[0].id
+      callback(attachmentID)
+    })
   }
 }

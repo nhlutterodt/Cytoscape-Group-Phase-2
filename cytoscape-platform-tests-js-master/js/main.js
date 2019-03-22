@@ -475,31 +475,38 @@ cyCaller.setLogCallBack(log)
 setTimeout(() => { call(Reveal.getSlide(0)) }, 500)
 //log('Started Cytoscape Testing', 'init')
 
+const jiraCaller = new JiraCaller()
+//constant variable to store issue id
+
+const issue = ''
+
+//once call back runs, issue id is set to constant variable Issue
+
+function get_issue_id_from_response(issueID){
+
+    issue = issueID
+    
+}
+
+
 function submit_jira_ticket(){
-    var data = JSON.stringify({
-  "fields": {
-    "summary": "",
-    "project": {
-      "id": ""
-    },
-    "issuetype": {
-      "id": ""
-    }
-  }
-});
+    //create new Jira Caller Class
 
-var xhr = new XMLHttpRequest();
-xhr.withCredentials = true;
 
-xhr.addEventListener("readystatechange", function () {
-  if (this.readyState === this.DONE) {
-    console.log(this.responseText);
-  }
-});
+   
 
-xhr.open("POST", "https://cytoscape.atlassian.net/rest/api/3/issue");
-xhr.setRequestHeader("authorization", "");
-xhr.setRequestHeader("content-type", "application/json");
+   jiraCaller.setLogCallBack(log)
 
-xhr.send(data);
+   jiraCaller.get_issue_id(get_issue_id_from_response)
+
+   var data = window.DATA.log.join('\n')
+
+   jiraCaller.submit_log(issue, data)
+
+   //another function to submit the log file
+
+   /* This function would pass in the log file as the attachment. 
+   There will be two parameters. Issue ID and the Data for the parameters for submissions*/
+
+
 }
