@@ -11,16 +11,21 @@
   <link rel="stylesheet" href="css/theme/black.css">
 
 
+
   <!-- Adding Jasmine Test capabilities-->
   <script src="lib/jasmine-3.2.1/jasmine.js"></script>
   <script src="lib/jasmine-3.2.1/jasmine-html.js"></script>
   <script src="lib/jasmine-3.2.1/boot.js"></script>
 
+
   <!-- Theme used for syntax highlighting of code -->
   <link rel="stylesheet" href="lib/css/zenburn.css">
   <link rel="stylesheet" href="css/main.css">
+  
+
 
   <script src="js/cycaller.js"></script>
+  <script src="js/jiraReport.js"></script>
   <script src="spec/cytoscape_spec.js"></script>
   <!-- Printing and PDF exports -->
   <script>
@@ -74,10 +79,20 @@
         "inputs": [
         {
           "id": "new_session",
+          "text": "The Cytoscape Network Panel should be reset to an empty panel state.",
           "text": "Is the Cytoscape Network panel empty?",
           "type": "checkbox"
         }
         ]
+        }-->
+        </div>
+      </section>
+    <section id="navigation">
+        <div class="cyrest">
+        <!--{
+        "title": "Test Navigation",
+        "text": "To run the default tests simply click the right arrow at the bottom right of the option menu screen and default options will run. 
+                 To select tests click the down arrow on slide 5.1 - 5.3."
         }-->
         </div>
       </section>
@@ -91,14 +106,14 @@
         {
           "id": "edgesandnodesTest",
           "name":"v_2", 
-          "text": "List the number of edges and nodes",
+          "text": "Display Nodes and Edges Values",
           "type": "radio",
-          "checked":"false"
+          "checked":"true"
         }]
         }-->
         </div>
-
-        	<div class="navigate-next">Continue</div>
+            <div class="navigate-prev">Review the Test Navigation Slide for Help</div>        
+            <div class="navigate-next">Continue to Layout Test Selection</div>            
         </section>
         <section id="layoutTestConfig" data-transition="zoom"> 
           <div class="cyrest" style="text-align:left;">
@@ -117,11 +132,13 @@
           "name":"N_2", 
           "text": "Hierarchal Layout",
           "type": "radio",
-           "checked":"false"
+          "checked":"false"
         }]
         }-->
         </div>
-        	<div class="navigate-next">Continue</div>
+            <div class="navigate-prev">Back to Network Test Selection</div>
+            <div class="navigate-next">Continue to Diffusion Test Selection</div>
+            
         </section>
          <section id="diffusionTestConfig" data-transition="zoom"> 
           <div class="cyrest" style="text-align:left;">
@@ -134,7 +151,7 @@
           "name":"D_2", 
           "text": "Diffuse",
           "type": "radio",
-          "checked":"false"
+          "checked":"true"
         },{
           "id": "diffusionTestwithoptions",
           "name":"D_2", 
@@ -157,7 +174,8 @@
         ]
         }-->
         </div>
-        <a href="#/galfiltered">Start Network Test</a>
+            <div class="navigate-prev">Back to Layout Test Selection</div>
+            <div class="navigate-left">Back to Navigation Help</div>
         </section>
       </section>
       <section id="galfiltered">
@@ -176,7 +194,7 @@
         }]
         }-->
         </div>
-        	<p class="fragment highlight-current-blue"><a href="#/layout">Start Layout Test</a></p>
+        	<p class="fragment highlight-current-blue"><a href="#/layout">Continue to Layout Test Slide</a></p>
          
       </section>
       <section id="layout">
@@ -191,7 +209,7 @@
         }]
         }-->
         </div>
-        <a href="#/diffusion">Start Diffusion Test</a>
+        <p class="fragment highlight-current-blue"><a href="#/diffusion">Continue to Diffusion Test Slide</a></p>
       </section>
       <section id="diffusion">
         <div class="cyrest">
@@ -207,6 +225,7 @@
         }]
         }-->
         </div>
+        <p>End of Selected User Involved Tests</p>
       </section>
       <section id="session_save">
         <h2>Session Save</h2>
@@ -235,7 +254,7 @@
       </section>
       <section id="close_cytoscape">
         <h2>Thanks for testing Cytoscape!</h2>
-        <p class="text">Please submit your framework.log</p>
+        <p class="text">Please submit yout framework.log</p>
       </section>
       <section id="submit">
         <div class="cyrest">
@@ -252,7 +271,10 @@
   </div>
   <script src="lib/js/head.min.js"></script>
   <script src="js/reveal.js"></script>
+    <!-- Added script for JIRA Logging -->
+ 
   <script src="js/main.js"></script>
+
 </body>
 
 </html>
